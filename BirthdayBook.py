@@ -40,10 +40,3 @@ class ContactBook():
             addressList = []
 
         return addressList
-
-    def processAdd(self):
-        print self.name.get()
-        contact = Contact(name=self.name.get(), phone=self.phone.get(),
-                          birthday=self.birthday.get())
-        self.addressList.append(contact)
-        self.saveContact()

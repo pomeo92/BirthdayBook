@@ -32,18 +32,25 @@ class App(tk.Frame):
         Entry(parent, textvariable=self.book.birthday, width=20).grid(row=1,
                                                                  column=5)
         Button(parent, text="Add",
-               command=self.book.processAdd).grid(row=1, column=6)
+               command=self.processAdd).grid(row=1, column=6)
 
         Button(parent, text="Delete",
                command=self.processDelete).grid(row=1, column=7)
 
+    def processAdd(self):
+        contact = Contact(name=self.book.name.get(), phone=self.book.phone.get(),
+                          birthday=self.book.birthday.get())
+        self.book.addressList.append(contact)
+        self.book.saveContact()
+        self.update_tabel()
+
     def processDelete(self):
         current_name = self.treeview.item(self.treeview.focus())["text"]
         current_phone = self.treeview.item(self.treeview.focus())["values"][0]
-        current_birthday = self.treeview.item(self.treeview.focus())["text"][1]
+        current_birthday = self.treeview.item(self.treeview.focus())["values"][1]
         for i in self.book.addressList:
-            if (i.name == current_name and i.name == current_phone and
-                        i.name == current_birthday):
+            if (i.name == current_name and i.phone == current_phone and
+                        i.birthday == current_birthday):
                 self.book.addressList.remove(i)
         self.book.saveContact()
         self.update_tabel()
@@ -76,6 +83,7 @@ class App(tk.Frame):
 
 def main():
     root = tk.Tk()
+    root.resizable(0, 0)
     App(root)
     root.mainloop()
 
