@@ -19,14 +19,14 @@ class ContactBook():
         self.name = StringVar()
         self.phone = StringVar()
         self.birthday = StringVar()
-          
+
         self.addressList = self.loadContact()
-        
+
     def saveContact(self):
         with open("contacts.json", "wb") as f:
             pickle.dump(self.addressList, f)
             tkMessageBox.showinfo("Address saved", "A new contact is saved")
-    
+
     @staticmethod
     def loadContact():
         if not os.path.isfile("contacts.json"):
@@ -40,7 +40,7 @@ class ContactBook():
             addressList = []
 
         return addressList
-            
+
     def processAdd(self):
         print self.name.get()
         contact = Contact(name=self.name.get(), phone=self.phone.get(),
