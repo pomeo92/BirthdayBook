@@ -1,5 +1,6 @@
 import datetime
 import threading
+import time
 import tkMessageBox
 
 
@@ -14,10 +15,11 @@ class Notifier(object):
         self.birthday_men = []
         current_date = datetime.datetime.now().strftime("%Y-%m-%d")
         for i in self.contacts:
-            if i.birthday == current_date:
+            if i.birthday[5:] == current_date[5:]:
                 self.birthday_men.append(i)
         if self.birthday_men:
             self.notify()
+        time.sleep(0.001)
 
     def notify(self):
         msg = ", ".join(self.birthday_men)

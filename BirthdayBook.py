@@ -20,11 +20,8 @@ class ContactBook(object):
         self.name = StringVar()
         self.phone = StringVar()
         self.birthday = StringVar()
-        print 222
         self.contacts = self.load_contact()
-        print 222
         notifier_obj = notifier.Notifier(self.contacts)
-        print 222
         notifier_obj.notifier_thread.start()
 
     def save_contact(self):
@@ -32,7 +29,8 @@ class ContactBook(object):
             pickle.dump(self.contacts, f)
             tkMessageBox.showinfo("Contact saved", "A new contact is saved")
 
-    def load_contact(self):
+    @staticmethod
+    def load_contact():
         if not os.path.isfile("contacts.json"):
             return []  # Return an empty list
 
@@ -41,7 +39,6 @@ class ContactBook(object):
                 contacts = pickle.load(f)
         except Exception as e:
             print e
-            raise e
             contacts = []
 
         return contacts

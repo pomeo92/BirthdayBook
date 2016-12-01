@@ -17,9 +17,7 @@ class App(tk.Frame):
         self.name = StringVar()
         self.phone = StringVar()
         self.birthday = StringVar()
-        print 1111
         self.book = BirthdayBook.ContactBook()
-        print 1111
 
         self.load_table()
         self.grid(sticky=(tk.N, tk.S, tk.W, tk.E), columnspan=8)
@@ -43,7 +41,6 @@ class App(tk.Frame):
         Button(parent, text="Delete",
                command=self.process_delete).grid(row=1, column=7)
 
-    @staticmethod
     def validate(self, date_text):
         try:
             datetime.datetime.strptime(date_text, '%Y-%m-%d')
