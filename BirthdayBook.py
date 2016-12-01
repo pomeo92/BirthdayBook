@@ -20,12 +20,12 @@ class ContactBook():
         self.phone = StringVar()
         self.birthday = StringVar()
 
-        self.addressList = self.loadContact()
+        self.contacts = self.loadContact()
 
     def saveContact(self):
         with open("contacts.json", "wb") as f:
-            pickle.dump(self.addressList, f)
-            tkMessageBox.showinfo("Address saved", "A new contact is saved")
+            pickle.dump(self.contacts, f)
+            tkMessageBox.showinfo("Contact saved", "A new contact is saved")
 
     @staticmethod
     def loadContact():
@@ -34,9 +34,9 @@ class ContactBook():
 
         try:
             with open("contacts.json", "rb") as f:
-                addressList = pickle.load(f)
+                contacts = pickle.load(f)
         except Exception as e:
             print e
-            addressList = []
+            contacts = []
 
-        return addressList
+        return contacts

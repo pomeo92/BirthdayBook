@@ -1,7 +1,10 @@
+import datetime
 import Tkinter as tk
 from Tkinter import *
+import tkMessageBox
 
 import ttk
+
 
 import BirthdayBook
 from BirthdayBook import Contact
@@ -37,21 +40,34 @@ class App(tk.Frame):
         Button(parent, text="Delete",
                command=self.processDelete).grid(row=1, column=7)
 
+    def validate(self, date_text):
+        try:
+            datetime.datetime.strptime(date_text, '%Y-%m-%d')
+        except ValueError:
+            return False
+        return True
+
     def processAdd(self):
+        if not self.validate(self.book.birthday.get()):
+            tkMessageBox.showinfo("Contact not saved",
+                                  "Incorrect data format, it should be YYYY-MM-DD")
+            return
         contact = Contact(name=self.book.name.get(), phone=self.book.phone.get(),
                           birthday=self.book.birthday.get())
-        self.book.addressList.append(contact)
+        self.book.contacts.append(contact)
         self.book.saveContact()
         self.update_tabel()
 
     def processDelete(self):
-        current_name = self.treeview.item(self.treeview.focus())["text"]
-        current_phone = self.treeview.item(self.treeview.focus())["values"][0]
-        current_birthday = self.treeview.item(self.treeview.focus())["values"][1]
-        for i in self.book.addressList:
+        current_name = str(self.treeview.item(self.treeview.focus())["text"])
+        current_phone = str(self.treeview.item(
+            self.treeview.focus())["values"][0])
+        current_birthday = str(self.treeview.item(
+            self.treeview.focus())["values"][1])
+        for i in self.book.contacts:
             if (i.name == current_name and i.phone == current_phone and
                         i.birthday == current_birthday):
-                self.book.addressList.remove(i)
+                self.book.contacts.remove(i)
         self.book.saveContact()
         self.update_tabel()
 
