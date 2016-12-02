@@ -7,6 +7,7 @@ import ttk
 
 import BirthdayBook
 from BirthdayBook import Contact
+import notifier
 
 
 class App(tk.Frame):
@@ -40,6 +41,9 @@ class App(tk.Frame):
 
         Button(parent, text="Delete",
                command=self.process_delete).grid(row=1, column=7)
+
+        notifier_obj = notifier.Notifier(self.book.contacts)
+        notifier_obj.notifier_thread.start()
 
     def validate(self, date_text):
         try:

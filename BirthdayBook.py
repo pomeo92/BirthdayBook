@@ -2,7 +2,6 @@ import pickle
 import os
 from Tkinter import *
 import tkMessageBox
-import notifier
 
 
 class Contact(object):
@@ -16,13 +15,10 @@ class Contact(object):
 class ContactBook(object):
 
     def __init__(self):
-
         self.name = StringVar()
         self.phone = StringVar()
         self.birthday = StringVar()
         self.contacts = self.load_contact()
-        notifier_obj = notifier.Notifier(self.contacts)
-        notifier_obj.notifier_thread.start()
 
     def save_contact(self):
         with open("contacts.json", "wb") as f:
