@@ -1,0 +1,10 @@
+This is the source code of contact book where you may store you contacts
+
+To run it you need to execute tree_view.py file.
+
+Features:
+ * Add contact(name is unique, person may have multiple phones)
+ * Delete contact
+ * Notify about today birthdays
+
+For backend was used SQLite. For now it was tested under Linux.
