@@ -22,6 +22,8 @@ lib64
 
 # Installer logs
 pip-log.txt
+contacts.db
+
 
 # Unit test / coverage reports
 .coverage

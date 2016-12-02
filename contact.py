@@ -1,5 +1,3 @@
-import pickle
-import os
 from Tkinter import *
 import tkMessageBox
 import sqlite3
@@ -23,27 +21,33 @@ class ContactBook(object):
         self._cursor = self._conn.cursor()
         self.contacts = self.load_contacts()
 
-    def save_contacts(self):
-        with open("contacts.json", "wb") as f:
-            pickle.dump(self.contacts, f)
-            tkMessageBox.showinfo("Contact saved", "A new contact is saved")
 
     def save_contact(self, contact):
+        show_msg = False
         try:
             self._cursor.execute(
                 '''INSERT INTO Person (name, birthday) VALUES ('%s', '%s');''' % (
                     contact.name, contact.birthday))
             self._conn.commit()
+            show_msg = True
         except sqlite3.IntegrityError as e:
             # Logging. Its normal situation
-            print e
+            pass
         row = self._cursor.execute(
             '''SELECT person_id from Person WHERE name=?''',
             (contact.name, )).fetchone()
-        self._cursor.execute(
-            '''INSERT INTO Phone_book (phone, person_id) VALUES (?, ?)''', (
-            contact.phone, row[0], ))
+        try:
+            self._cursor.execute(
+                '''INSERT INTO Phone_book (phone, person_id) VALUES (?, ?)''',
+                (contact.phone, row[0], ))
+            show_msg = True
+        except sqlite3.IntegrityError as e:
+            tkMessageBox.showinfo("Contact exists",
+                                  "This contact already exists in you book.")
         self._conn.commit()
+        self.contacts = self.load_contacts()
+        if show_msg :
+            tkMessageBox.showinfo("Contact saved", "A new contact is saved")
 
     @staticmethod
     def create_db(name="contacts.db"):
@@ -60,28 +64,34 @@ class ContactBook(object):
                 phone TEXT,
                 person_id INTEGER,
                 phone_id INTEGER PRIMARY KEY AUTOINCREMENT,
-                FOREIGN KEY(person_id) REFERENCES Person(person_id))''')
+                FOREIGN KEY(person_id) REFERENCES Person(person_id),
+                UNIQUE (person_id, phone))''')
         conn.commit()
         return conn
 
     def load_contacts(self):
         res = []
         contacts = self._cursor.execute(
-            '''SELECT Person.name, Phone_book.phone, Person.birthday from Person, Phone_book''')
+            '''SELECT Person.name, Phone_book.phone, Person.birthday
+            from Person JOIN Phone_book ON Person.person_id=
+            Phone_book.person_id''')
         for i in contacts:
             res.append(Contact(i[0], i[1], i[2]))
         return res
 
-    # @staticmethod
-    # def load_contact():
-    #     if not os.path.isfile("contacts.json"):
-    #         return []  # Return an empty list
-    #
-    #     try:
-    #         with open("contacts.json", "rb") as f:
-    #             contacts = pickle.load(f)
-    #     except Exception as e:
-    #         print e
-    #         contacts = []
-    #
-    #     return contacts
+    def delete_contact(self, contact):
+        row = self._cursor.execute(
+            '''SELECT person_id from Person WHERE name=?''',
+            (contact.name,)).fetchone()
+
+        self._cursor.execute(
+            '''DELETE FROM Phone_book WHERE person_id=? and phone=?''', (
+                row[0], contact.phone,))
+        self._conn.commit()
+        row = self._cursor.execute(
+            '''SELECT * from Phone_book WHERE person_id=?''', (
+                row[0],)).fetchall()
+        if not len(row):
+            self._cursor.execute(
+                '''DELETE FROM Person WHERE name=?''', (contact.name,))
+        self.contacts = self.load_contacts()

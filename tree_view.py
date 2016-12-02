@@ -5,8 +5,8 @@ import tkMessageBox
 
 import ttk
 
-import BirthdayBook
-from BirthdayBook import Contact
+import contact
+from contact import Contact
 import notifier
 
 
@@ -32,7 +32,7 @@ class App(tk.Frame):
         self.name = StringVar()
         self.phone = StringVar()
         self.birthday = StringVar()
-        self.book = BirthdayBook.ContactBook()
+        self.book = contact.ContactBook()
 
         self.load_table()
         self.grid(sticky=(tk.N, tk.S, tk.W, tk.E), columnspan=8)
@@ -73,7 +73,6 @@ class App(tk.Frame):
             return
         contact = Contact(name=self.book.name.get(), phone=self.book.phone.get(),
                           birthday=self.book.birthday.get())
-        self.book.contacts.append(contact)
         self.book.save_contact(contact)
         self.update_tabel()
 
@@ -83,11 +82,9 @@ class App(tk.Frame):
             self.treeview.focus())["values"][0])
         current_birthday = str(self.treeview.item(
             self.treeview.focus())["values"][1])
-        for i in self.book.contacts:
-            if (i.name == current_name and i.phone == current_phone and
-                        i.birthday == current_birthday):
-                self.book.contacts.remove(i)
-        self.book.save_contacts()
+
+        contact = Contact(current_name, current_phone, current_birthday)
+        self.book.delete_contact(contact)
         self.update_tabel()
 
     def create_ui(self):

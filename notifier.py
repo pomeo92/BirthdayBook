@@ -26,5 +26,5 @@ class Notifier(object):
 
     def notify(self):
         msg = ", ".join(self.birthday_men)
-        tkMessageBox.showinfo("Today birthdays", msg)
         self.showed_at = datetime.datetime.now().strftime("%Y-%m-%d")
+        tkMessageBox.showinfo("Today birthdays", msg)
