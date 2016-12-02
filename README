@@ -8,3 +8,9 @@ Features:
  * Notify about today birthdays
 
 For backend was used SQLite. For now it was tested under Linux.
+
+Don't run it simultaneously multiple times this will cause to nasty bugs like
+locked db. To check what process locked it type in root of the project:
+ $ fuser contacts.db
+
+It won't be fixed because its a feature.
