@@ -10,6 +10,20 @@ from BirthdayBook import Contact
 import notifier
 
 
+class CustomWindow(tk.Tk):
+
+    def __init__(self):
+        tk.Tk.__init__(self)
+        self.connection = None
+        self.protocol("WM_DELETE_WINDOW", self.on_exit)
+
+    def on_exit(self):
+        """When you click to exit, this function is called"""
+        self.connection.commit()
+        self.connection.close()
+        self.destroy()
+
+
 class App(tk.Frame):
 
     def __init__(self, parent):
@@ -60,7 +74,7 @@ class App(tk.Frame):
         contact = Contact(name=self.book.name.get(), phone=self.book.phone.get(),
                           birthday=self.book.birthday.get())
         self.book.contacts.append(contact)
-        self.book.save_contact()
+        self.book.save_contact(contact)
         self.update_tabel()
 
     def process_delete(self):
@@ -73,7 +87,7 @@ class App(tk.Frame):
             if (i.name == current_name and i.phone == current_phone and
                         i.birthday == current_birthday):
                 self.book.contacts.remove(i)
-        self.book.save_contact()
+        self.book.save_contacts()
         self.update_tabel()
 
     def create_ui(self):
@@ -92,10 +106,10 @@ class App(tk.Frame):
         self.grid_columnconfigure(0, weight = 1)
 
     def update_tabel(self):
-        contacts = BirthdayBook.ContactBook.load_contact()
+        self.book.load_contacts()
         for i in self.treeview.get_children():
             self.treeview.detach(i)
-        for i, contact in enumerate(contacts):
+        for i, contact in enumerate(self.book.contacts):
             self.treeview.insert('', 'end', text=contact.name, values=(
                 contact.phone, contact.birthday))
 
@@ -104,9 +118,10 @@ class App(tk.Frame):
 
 
 def main():
-    root = tk.Tk()
+    root = CustomWindow()
     root.resizable(0, 0)
-    App(root)
+    app = App(root)
+    root.connection = app.book._conn
     root.mainloop()
 
 if __name__ == '__main__':
