@@ -103,7 +103,6 @@ class App(tk.Frame):
         self.grid_columnconfigure(0, weight = 1)
 
     def update_tabel(self):
-        self.book.load_contacts()
         for i in self.treeview.get_children():
             self.treeview.detach(i)
         for i, contact in enumerate(self.book.contacts):

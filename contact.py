@@ -19,8 +19,8 @@ class ContactBook(object):
         self.birthday = StringVar()
         self._conn = ContactBook.create_db()
         self._cursor = self._conn.cursor()
+        # Cache variable for fast access to contacts avoid qeury to db
         self.contacts = self.load_contacts()
-
 
     def save_contact(self, contact):
         show_msg = False
@@ -43,7 +43,7 @@ class ContactBook(object):
             show_msg = True
         except sqlite3.IntegrityError as e:
             tkMessageBox.showinfo("Contact exists",
-                                  "This contact already exists in you book.")
+                                  "This contact already exists in your book.")
         self._conn.commit()
         self.contacts = self.load_contacts()
         if show_msg :
